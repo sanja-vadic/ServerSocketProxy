@@ -30,13 +30,20 @@ public class SocketThread implements Runnable {
 			
 			String responseFromWebApplication = sendData(inputData);
 			out.print(responseFromWebApplication);
+			out.flush();
 			
 			in.close();
 			out.close();
 			
 			long endTime = System.currentTimeMillis() / 1000;
-			if (endTime - startTime > THRESHOLD_CONNECTION_DURATION_BY_REQUEST) {
+			if (endTime - startTime > THRESHOLD_CONNECTION_DURATION_BY_REQUEST || true) {
 				System.out.println("Desava se Slow HTTP napad.");
+				Log log = Log.builder()
+						.clientAddress("127.0.0.1")
+						.requestMethod("POST")
+						.attackType("SLOW_HTTP")
+						.build();
+				LogClient.send(log);
 			}
 			
 		} catch (IOException e) {
@@ -47,7 +54,16 @@ public class SocketThread implements Runnable {
 	private String getInputData(BufferedReader in) throws IOException {
 		StringBuilder responseBuilder = new StringBuilder();
 		String line = "";
-		while((line = in.readLine()) != null) responseBuilder.append(line);
+		while((line = in.readLine()) != null) {
+			if(line.equals("")) {
+				System.out.println("Last character");
+				break;
+			}
+			responseBuilder.append(line).append("\r\n");
+			System.out.println("Input data line: " + line);
+		}
+		responseBuilder.append("\r\n");
+		System.out.println("Data: " + responseBuilder.toString());
 		return responseBuilder.toString();
 	}
 	
@@ -56,13 +72,23 @@ public class SocketThread implements Runnable {
 		PrintWriter pw = new PrintWriter(s.getOutputStream());
 		pw.print(inputData);
 		pw.flush();
-		pw.close();
-		
 		BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		
+		
 		StringBuilder responseBuilder = new StringBuilder();
 		String line = "";
-		while((line = in.readLine()) != null) responseBuilder.append(line);
+		System.out.println("Prima podatke");
+		long startTime = System.currentTimeMillis() / 1000;
+		while((line = in.readLine()) != null) {
+			responseBuilder.append(line);
+			responseBuilder.append("\r\n");
+			System.out.println("Primio liniju: " + line);
+		}
+		System.out.println("Time: " + ((System.currentTimeMillis() / 1000) - startTime) + "s");
+		System.out.println("Primio podatke");
 		in.close();
+		pw.close();
+		s.close();
 		return responseBuilder.toString();
 	}
 	

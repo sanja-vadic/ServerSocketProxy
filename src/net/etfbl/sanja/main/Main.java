@@ -10,10 +10,12 @@ import java.net.Socket;
 
 public class Main {
 	private static final long THRESHOLD_CONNECTIONS_PER_SECOND = 30;
+	private static final int PORT = 3333;
 	
 	public static void main(String[] args) {
+		ServerSocket ss = null;
 		try {
-			ServerSocket ss = new ServerSocket(4444);
+			ss = new ServerSocket(PORT);
 			long counter = 0;
 			long startTimestamp = System.currentTimeMillis() / 1000;
 			while(true) {
@@ -27,16 +29,30 @@ public class Main {
 				long countingTime = System.currentTimeMillis() / 1000 - startTimestamp;
 				if(countingTime > 10) {
 					long requestsPerSecond = counter / countingTime;
-					if(requestsPerSecond >= THRESHOLD_CONNECTIONS_PER_SECOND) {
+					if(requestsPerSecond >= THRESHOLD_CONNECTIONS_PER_SECOND || true) {
 						System.out.println("Desava se DOS napad.");
+						Log log = Log.builder()
+								.clientAddress("127.0.0.1")
+								.requestMethod("GET")
+								.attackType("DOS")
+								.build();
+						LogClient.send(log);
 					}
 					counter = 0;
 					startTimestamp = System.currentTimeMillis() / 1000;
 				}
 
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			if(ss != null) {
+				try {
+					ss.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 }
