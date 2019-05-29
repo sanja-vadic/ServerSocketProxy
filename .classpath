@@ -3,8 +3,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/IP2018/AdministratorApp/WebContent/WEB-INF/lib/java-json.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Asus/Downloads/lombok-1.18.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Asus/Downloads/unirest-java-1.4.9.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Asus/Downloads/gson-2.8.5.jar"/>
+	<classpathentry kind="lib" path="C:/Sigurnost/SigurnostSafe/WebContent/WEB-INF/lib/lombok-1.18.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
