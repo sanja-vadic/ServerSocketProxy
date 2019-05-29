@@ -1,6 +1,7 @@
 package net.etfbl.sanja.main;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -72,20 +73,29 @@ public class SocketThread implements Runnable {
 		PrintWriter pw = new PrintWriter(s.getOutputStream());
 		pw.print(inputData);
 		pw.flush();
-		BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-		
+		//BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		InputStreamReader in = new InputStreamReader(s.getInputStream());
 		
 		StringBuilder responseBuilder = new StringBuilder();
 		String line = "";
 		System.out.println("Prima podatke");
 		long startTime = System.currentTimeMillis() / 1000;
-		while((line = in.readLine()) != null) {
-			responseBuilder.append(line);
-			responseBuilder.append("\r\n");
-			System.out.println("Primio liniju: " + line);
+		
+		int character;
+		//char[] buffer = new char[8192]; // or 4096, or more
+		while ((character = in.read()) != -1)
+		{
+			System.out.println((char) character);
+			responseBuilder.append((char) character);
 		}
+		
+//		while((line = in.readLine()) != null) {
+//			responseBuilder.append(line);
+//			responseBuilder.append("\r\n");
+//			System.out.println("Primio liniju: " + line);
+//		}
 		System.out.println("Time: " + ((System.currentTimeMillis() / 1000) - startTime) + "s");
-		System.out.println("Primio podatke");
+		System.out.println("Primio podatke: " + responseBuilder.toString());
 		in.close();
 		pw.close();
 		s.close();

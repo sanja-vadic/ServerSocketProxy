@@ -33,7 +33,7 @@ public class Main {
 						System.out.println("Desava se DOS napad.");
 						Log log = Log.builder()
 								.clientAddress("127.0.0.1")
-								.requestMethod("GET")
+								.requestMethod("POST")
 								.attackType("DOS")
 								.build();
 						LogClient.send(log);
