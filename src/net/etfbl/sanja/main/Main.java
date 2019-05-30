@@ -29,7 +29,7 @@ public class Main {
 				long countingTime = System.currentTimeMillis() / 1000 - startTimestamp;
 				if(countingTime > 10) {
 					long requestsPerSecond = counter / countingTime;
-					if(requestsPerSecond >= THRESHOLD_CONNECTIONS_PER_SECOND || true) {
+					if(requestsPerSecond >= THRESHOLD_CONNECTIONS_PER_SECOND) {
 						System.out.println("Desava se DOS napad.");
 						Log log = Log.builder()
 								.clientAddress("127.0.0.1")

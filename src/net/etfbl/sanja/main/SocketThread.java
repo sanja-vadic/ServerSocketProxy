@@ -11,7 +11,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class SocketThread implements Runnable {
-	private static final long THRESHOLD_CONNECTION_DURATION_BY_REQUEST = 30;
+	private static final long THRESHOLD_CONNECTION_DURATION_BY_REQUEST = 10;
 	private Socket socket;
 	
 	public SocketThread(Socket socket) {
@@ -37,7 +37,7 @@ public class SocketThread implements Runnable {
 			out.close();
 			
 			long endTime = System.currentTimeMillis() / 1000;
-			if (endTime - startTime > THRESHOLD_CONNECTION_DURATION_BY_REQUEST || true) {
+			if (endTime - startTime > THRESHOLD_CONNECTION_DURATION_BY_REQUEST) {
 				System.out.println("Desava se Slow HTTP napad.");
 				Log log = Log.builder()
 						.clientAddress("127.0.0.1")
