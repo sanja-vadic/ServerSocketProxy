@@ -28,6 +28,10 @@ public class SocketThread implements Runnable {
 			out = new PrintWriter(socket.getOutputStream());
 			
 			String inputData = getInputData(in);
+			String requestMethod = inputData.substring(0, inputData.indexOf(" "));
+			requestMethod = requestMethod.equals("GET") || requestMethod.equals("POST") ? requestMethod : "UNDEFINED";
+			
+			long endTime = System.currentTimeMillis() / 1000;
 			
 			String responseFromWebApplication = sendData(inputData);
 			out.print(responseFromWebApplication);
@@ -36,12 +40,12 @@ public class SocketThread implements Runnable {
 			in.close();
 			out.close();
 			
-			long endTime = System.currentTimeMillis() / 1000;
+			
 			if (endTime - startTime > THRESHOLD_CONNECTION_DURATION_BY_REQUEST) {
 				System.out.println("Desava se Slow HTTP napad.");
 				Log log = Log.builder()
-						.clientAddress("127.0.0.1")
-						.requestMethod("POST")
+						.clientAddress(socket.getInetAddress().getHostAddress())
+						.requestMethod(requestMethod)
 						.attackType("SLOW_HTTP")
 						.build();
 				LogClient.send(log);
@@ -57,14 +61,14 @@ public class SocketThread implements Runnable {
 		String line = "";
 		while((line = in.readLine()) != null) {
 			if(line.equals("")) {
-				System.out.println("Last character");
+				//System.out.println("Last character");
 				break;
 			}
 			responseBuilder.append(line).append("\r\n");
-			System.out.println("Input data line: " + line);
+		//	System.out.println("Input data line: " + line);
 		}
 		responseBuilder.append("\r\n");
-		System.out.println("Data: " + responseBuilder.toString());
+		//System.out.println("Data: " + responseBuilder.toString());
 		return responseBuilder.toString();
 	}
 	
@@ -73,29 +77,21 @@ public class SocketThread implements Runnable {
 		PrintWriter pw = new PrintWriter(s.getOutputStream());
 		pw.print(inputData);
 		pw.flush();
-		//BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		InputStreamReader in = new InputStreamReader(s.getInputStream());
 		
 		StringBuilder responseBuilder = new StringBuilder();
 		String line = "";
-		System.out.println("Prima podatke");
-		long startTime = System.currentTimeMillis() / 1000;
+		//System.out.println("Prima podatke");
+		long startTime = System.currentTimeMillis();
 		
 		int character;
-		//char[] buffer = new char[8192]; // or 4096, or more
 		while ((character = in.read()) != -1)
 		{
-			System.out.println((char) character);
 			responseBuilder.append((char) character);
 		}
 		
-//		while((line = in.readLine()) != null) {
-//			responseBuilder.append(line);
-//			responseBuilder.append("\r\n");
-//			System.out.println("Primio liniju: " + line);
-//		}
-		System.out.println("Time: " + ((System.currentTimeMillis() / 1000) - startTime) + "s");
-		System.out.println("Primio podatke: " + responseBuilder.toString());
+		//System.out.println("Time: " + ((System.currentTimeMillis()) - startTime) + "ms");
+		//System.out.println("Primio podatke: " + responseBuilder.toString());
 		in.close();
 		pw.close();
 		s.close();

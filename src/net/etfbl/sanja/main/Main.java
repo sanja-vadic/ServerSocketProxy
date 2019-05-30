@@ -32,8 +32,8 @@ public class Main {
 					if(requestsPerSecond >= THRESHOLD_CONNECTIONS_PER_SECOND) {
 						System.out.println("Desava se DOS napad.");
 						Log log = Log.builder()
-								.clientAddress("127.0.0.1")
-								.requestMethod("POST")
+								.clientAddress(s.getInetAddress().getHostAddress())
+								.requestMethod("GET")
 								.attackType("DOS")
 								.build();
 						LogClient.send(log);
@@ -44,7 +44,7 @@ public class Main {
 
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} finally {
 			if(ss != null) {
 				try {
